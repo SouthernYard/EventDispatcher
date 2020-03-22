@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EventDispatcher {
 
@@ -27,8 +29,8 @@ public class EventDispatcher {
   }
 
   private void init() {
-    eventQueue = new LinkedList<>();
-    events = Collections.synchronizedMap(new LinkedHashMap<>());
+    eventQueue = new ConcurrentLinkedQueue<>();
+    events = new ConcurrentHashMap<>();
     timer = new Thread(() -> {
       while (isActive) {
         try {
