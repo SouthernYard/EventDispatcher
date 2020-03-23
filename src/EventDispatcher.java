@@ -2,8 +2,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
@@ -17,7 +15,7 @@ public class EventDispatcher {
   private Queue<Event> eventQueue;
   private Thread run;
   private Long interval = 1000L;
-  private Map<EventTypeEnum, LinkedHashMap<Integer, WeakReference<Object>>> events;
+  private Map<EventTypeEnum, ConcurrentHashMap<Integer, WeakReference<Object>>> events;
 
   public EventDispatcher() {
     this.init();
@@ -75,7 +73,7 @@ public class EventDispatcher {
 
   public void subscribe(EventTypeEnum eventType, Object subscriber) {
     if (!events.containsKey(eventType)) {
-      events.put(eventType, new LinkedHashMap<>());
+      events.put(eventType, new ConcurrentHashMap<>());
     }
     // Add
     events.get(eventType).put(subscriber.hashCode(), new WeakReference<>(subscriber));
