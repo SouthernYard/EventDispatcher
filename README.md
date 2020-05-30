@@ -40,4 +40,25 @@ public class Subscriber {
 在一个类中可以有多个订阅事件的成员方法, 不受限制.
 
 ### 发布者(分发器)
-发布者则是一个分发器, 在设计原理上可以参考我在文章开头所
+发布者则是一个分发器, 在设计原理上可以参考我在文章开头所展示的博文。
+1. 需要有订阅对象
+2. 分发器让订阅对象订阅事件，否则订阅行为不生效
+3. 启动分发器
+
+如下代码所示，Subscriber同时订阅了`EVENT_TIMER`和`EVENT_TEST`事件，同时，`Subscriber`在处理`EVENT_TEST`是阻塞的，但是这并不影响`EVENT_TIMER`事件的分发，因此事件的分发是非阻塞的。但是需要注意的一点是，
+因为订阅者实际是类中的成员方法，方法之间存在对成员变量的修改时，需要注意并发问题。
+
+``` Java
+  public static void main(String[] args) throws InterruptedException {
+
+    Subscriber subscriber = new Subscriber();
+    EventDispatcher eventDispatcher = new EventDispatcher();
+    eventDispatcher.subscribe(EventTypeEnum.EVENT_TIMER, subscriber);
+    eventDispatcher.subscribe(EventTypeEnum.EVENT_TEST, subscriber);
+    eventDispatcher.start();
+    while (true) {
+      TimeUnit.SECONDS.sleep(3);
+      eventDispatcher.putEvent(new Event(EventTypeEnum.EVENT_TEST, "Block code test"));
+    }
+  }
+```
