@@ -5,7 +5,8 @@
  */
 public enum EventTypeEnum {
   EVENT_NONE("noneEvent"),
-  EVENT_TIMER("timer");
+  EVENT_TIMER("timer"),
+  EVENT_TEST("test");
 
   String value;
 

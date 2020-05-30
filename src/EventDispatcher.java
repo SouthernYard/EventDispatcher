@@ -104,7 +104,7 @@ public class EventDispatcher {
         for (final Method method : subscriberObj.getClass().getDeclaredMethods()) {
           OnEvent annotation = method.getAnnotation(OnEvent.class);
           if (annotation != null && annotation.eventType().equals(event.getType())) {
-//             异步处理事件,但是如果事件处理函数也是阻塞的，虽然能异步处理，但是JVM会创建大量阻塞线程
+//             异步处理事件
              CompletableFuture.runAsync(() -> deliverEvent(subscriberObj, method, event));
           }
         }
