@@ -45,7 +45,7 @@ public class Subscriber {
 2. 分发器让订阅对象订阅事件，否则订阅行为不生效
 3. 启动分发器
 
-如下代码所示，Subscriber同时订阅了`EVENT_TIMER`和`EVENT_TEST`事件，同时，`Subscriber`在处理`EVENT_TEST`是阻塞的，但是这并不影响`EVENT_TIMER`事件的分发，因此事件的分发是非阻塞的。但是需要注意的一点是，
+如下代码所示，`Subscriber`同时订阅了`EVENT_TIMER`和`EVENT_TEST`事件，同时`Subscriber`在处理`EVENT_TEST`是阻塞的，但是这并不影响`EVENT_TIMER`事件的分发，因此事件的分发是非阻塞的。但是需要注意的一点是，
 因为订阅者实际是类中的成员方法，方法之间存在对成员变量的修改时，需要注意并发问题。
 
 ``` Java
@@ -61,4 +61,30 @@ public class Subscriber {
       eventDispatcher.putEvent(new Event(EventTypeEnum.EVENT_TEST, "Block code test"));
     }
   }
+```
+
+```
+Thread[ForkJoinPool.commonPool-worker-1,5,main]==1590769005160 -- Current time:Sat May 30 00:16:45 CST 2020
+Thread[ForkJoinPool.commonPool-worker-1,5,main]==1590769006142 -- Current time:Sat May 30 00:16:46 CST 2020
+Thread[ForkJoinPool.commonPool-worker-1,5,main]==1590769007141 : sBlock code test
+Thread[ForkJoinPool.commonPool-worker-2,5,main]==1590769007142 -- Current time:Sat May 30 00:16:47 CST 2020
+Thread[ForkJoinPool.commonPool-worker-2,5,main]==1590769008147 -- Current time:Sat May 30 00:16:48 CST 2020
+Thread[ForkJoinPool.commonPool-worker-2,5,main]==1590769009148 -- Current time:Sat May 30 00:16:49 CST 2020
+Thread[ForkJoinPool.commonPool-worker-2,5,main]==1590769010146 : sBlock code test
+Thread[ForkJoinPool.commonPool-worker-3,5,main]==1590769010152 -- Current time:Sat May 30 00:16:50 CST 2020
+Thread[ForkJoinPool.commonPool-worker-3,5,main]==1590769011152 -- Current time:Sat May 30 00:16:51 CST 2020
+Thread[ForkJoinPool.commonPool-worker-3,5,main]==1590769012152 -- Current time:Sat May 30 00:16:52 CST 2020
+Thread[ForkJoinPool.commonPool-worker-3,5,main]==1590769013151 : sBlock code test
+Thread[ForkJoinPool.commonPool-worker-4,5,main]==1590769013156 -- Current time:Sat May 30 00:16:53 CST 2020
+Thread[ForkJoinPool.commonPool-worker-4,5,main]==1590769014161 -- Current time:Sat May 30 00:16:54 CST 2020
+Thread[ForkJoinPool.commonPool-worker-4,5,main]==1590769015166 -- Current time:Sat May 30 00:16:55 CST 2020
+Thread[ForkJoinPool.commonPool-worker-4,5,main]==1590769016152 : sBlock code test
+Thread[ForkJoinPool.commonPool-worker-5,5,main]==1590769016169 -- Current time:Sat May 30 00:16:56 CST 2020
+Thread[ForkJoinPool.commonPool-worker-1,5,main]==1590769017169 -- Current time:Sat May 30 00:16:57 CST 2020
+Thread[ForkJoinPool.commonPool-worker-1,5,main]==1590769018172 -- Current time:Sat May 30 00:16:58 CST 2020
+Thread[ForkJoinPool.commonPool-worker-1,5,main]==1590769019152 : sBlock code test
+Thread[ForkJoinPool.commonPool-worker-5,5,main]==1590769019175 -- Current time:Sat May 30 00:16:59 CST 2020
+Thread[ForkJoinPool.commonPool-worker-2,5,main]==1590769020178 -- Current time:Sat May 30 00:17:00 CST 2020
+Thread[ForkJoinPool.commonPool-worker-2,5,main]==1590769021176 -- Current time:Sat May 30 00:17:01 CST 2020
+Thread[ForkJoinPool.commonPool-worker-2,5,main]==1590769022153 : sBlock code test
 ```
